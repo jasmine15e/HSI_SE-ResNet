@@ -46,7 +46,7 @@ if __name__ == '__main__':
     f = open('result_test.csv', 'w', newline='')
     csv_write = csv.writer(f)
     csv_write.writerow(
-        ['Salvianolic_pred', 'Dihydrotanshinone_pred', 'Cryptotanshinone_pred', 'Tanshinone_pred', 'Moisture_pred'])
+        ['compound_1_pred', 'compound_2_pred', 'compound_3_pred', 'compound_4_pred', 'pound_5_pred'])
     epochs = 50
     batch_size = 8
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -58,5 +58,5 @@ if __name__ == '__main__':
     criterion = nn.MSELoss().to(device)
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-    test('')
+    test('./model/compound_1.pth')
     f.close()
