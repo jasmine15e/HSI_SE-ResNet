@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.optim as optim
-from eval import Rmse, r2
+from sklearn.metrics import mean_squared_error, r2_score
 
 epochs = 50
 batch_size = 16
@@ -34,11 +34,11 @@ val_transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_data = MyData(root='',
-                    datatxt='',
+train_data = MyData(root='./data/train/',
+                    datatxt='./data/train.txt',
                     transform=train_transform)
-val_data = MyData(root='',
-                  datatxt='',
+val_data = MyData(root='./data/test/',
+                  datatxt='./data/test.txt',
                   transform=val_transform)
 
 train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=batch_size, shuffle=True)
@@ -51,9 +51,9 @@ length_val = len(val_loader)
 def train_img(epochs, model_name):
 
     for epoch in range(epochs):
-        running_loss = 0.0
-        rmse1 = 0.0
-        R21 = 0.0
+        train_loss = 0.0
+        train_rmse = 0.0
+        train_r2 = 0.0
         net.train()
         for i, data in enumerate(train_loader, 0):
 
@@ -66,9 +66,9 @@ def train_img(epochs, model_name):
             loss.backward()
             optimizer.step()
 
-            rmse1 += Rmse(labels, outputs)
-            R21 += r2(labels, outputs)
-            running_loss += loss.item()
+            train_rmse += mean_squared_error(labels, outputs)
+            train_r2 += r2_score(labels, outputs)
+            train_loss += loss.item()
 
         net.eval()
         val_loss = 0.0
@@ -82,12 +82,12 @@ def train_img(epochs, model_name):
                 loss = criterion(outputs, val_label)
                 val_loss += loss.item()
 
-                val_r2 += r2(val_label, outputs)
-                val_rmse += Rmse(val_label, outputs)
+                val_r2 += r2_score(val_label, outputs)
+                val_rmse += mean_squared_error(val_label, outputs)
 
         print('epoch{}: train_loss:{:.3f}\t train_rmse:{:.5f}\t train_r2:{:.5f}\t'
               'val_loss:{:.4f}\t val_rmse:{:.4f}\t val_r2:{:.4f}\t \n'.
-              format(epoch, running_loss/length_tr, rmse1/length_tr, R21/length_tr,
+              format(epoch, train_loss/length_tr, train_rmse/length_tr, train_r2/length_tr,
                      val_loss / length_val, val_rmse / length_val, val_r2 / length_val,))
 
     torch.save(net.state_dict(), model_name)
@@ -109,12 +109,12 @@ def train_one(epochs, model_name):
         loss.backward()
         optimizer.step()
 
-        R2 = r2(train_y, outputs)
-        rmse = Rmse(train_y, outputs)
+        r2 = r2_score(train_y, outputs)
+        rmse = mean_squared_error(train_y, outputs)
 
         if (epoch + 1) % 2 == 0:
             print('Epoch[{}/{}], loss: {:.6f}, R2:{:.3f}, RMSE:{:.3f}'.format(epoch + 1, epochs, loss.data,
-                                                                              R2, rmse))
+                                                                              r2, rmse))
     torch.save(net.state_dict(), model_name)
 
 
@@ -126,7 +126,7 @@ def test(PATH):
     test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=1, shuffle=True)
 
     rmse = 0.0
-    R2 = 0.0
+    r2 = 0.0
     net.eval()
     net.load_state_dict(torch.load(PATH))
     n = len(test_loader) - 1
@@ -137,9 +137,9 @@ def test(PATH):
             # print(labels[0])
             outputs = net(images)
 
-            rmse += Rmse(labels, outputs)
-            R2 += r2(labels, outputs)
-        print('[-------------%2d]  test_rmse()：%.3f  test_R2:%.3f' % (n, rmse / n, R2 / n))
+            rmse += mean_squared_error(labels, outputs)
+            r2 += r2_score(labels, outputs)
+        print('[-------------%2d]  test_rmse()：%.3f  test_R2:%.3f' % (n, rmse / n, r2 / n))
 
 
 

@@ -50,7 +50,7 @@ def save_resize_img(img_path, img_path_train, w, h):
 
 if __name__ == '__main__':
 
-    p1 = ''
-    p2 = ''
+    p1 = './data/raw_data/'
+    p2 = './data/img/'
     dataprocess = DataProcess(p1, p2)
     dataprocess.raw_to_jpg()

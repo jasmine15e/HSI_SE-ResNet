@@ -42,9 +42,9 @@ def split_train_test(img_path, df_path, save_path):
         train_img = df[df['label'] == i]
         train_id = train_img['num'].tolist()
         if i == 0:
-            train_img.to_csv('train.csv')
+            train_img.to_csv('./data/train.csv')
         else:
-            train_img.to_csv('test.csv')
+            train_img.to_csv('./data/test.csv')
 
         # copy img to train or test
         for idx in train_id:
@@ -66,7 +66,7 @@ def split_train_test(img_path, df_path, save_path):
 
 if __name__ == '__main__':
 
-    img_path = ''
-    df_path = ''
-    save_path = ''
+    img_path = './data/img/'
+    df_path = './data/labels.csv'
+    save_path = './data/'
     split_train_test(img_path, df_path, save_path)

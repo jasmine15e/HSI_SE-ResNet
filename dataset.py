@@ -48,7 +48,7 @@ class MyData(torch.utils.data.Dataset):
 
 def load_med_img(img_path, label_path, col=None):
     if col is None:
-        col = ['Salvianolic', 'Dihydrotanshinone', 'Cryptotanshinone', 'Tanshinone', 'Moisture']
+        col = ['compound_1', 'compound_2', 'compound_3', 'compound_4', 'compound_5']
     df = pd.read_csv(label_path)
 
     X, Y = [], []
@@ -69,7 +69,7 @@ def load_med_img(img_path, label_path, col=None):
     return X, Y
 
 if __name__ == '__main__':
-    label = ''
-    image = ''
+    image = '.data/train/'
+    label = './data/train.txt'
     x, y = load_med_img(image, label)
     print(x.shape, y.shape)
