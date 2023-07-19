@@ -139,7 +139,7 @@ def test(PATH):
 
             rmse += mean_squared_error(labels, outputs)
             r2 += r2_score(labels, outputs)
-        print('[-------------%2d]  test_rmse()：%.3f  test_R2:%.3f' % (n, rmse / n, r2 / n))
+        print('[-------------%2d]  test_rmse()：%.3f  test_R2:%.3f' % (n, rmse, r2))
 
 
 
