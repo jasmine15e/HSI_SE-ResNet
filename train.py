@@ -87,15 +87,15 @@ def train_img(epochs, model_name):
 
         print('epoch{}: train_loss:{:.3f}\t train_rmse:{:.5f}\t train_r2:{:.5f}\t'
               'val_loss:{:.4f}\t val_rmse:{:.4f}\t val_r2:{:.4f}\t \n'.
-              format(epoch, train_loss/length_tr, train_rmse/length_tr, train_r2/length_tr,
-                     val_loss / length_val, val_rmse / length_val, val_r2 / length_val,))
+              format(epoch, train_loss, train_rmse, train_r2,
+                     val_loss, val_rmse, val_r2,))
 
     torch.save(net.state_dict(), model_name)
 
 
-def train_one(epochs, model_name):
-    label = ''
-    image = ''
+def train_cv(epochs, model_name):
+    image = '.data/img/'
+    label = '.data/data/labels'
     x, y = load_med_img(image, label)
     train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.1, random_state=111)
 
@@ -119,8 +119,8 @@ def train_one(epochs, model_name):
 
 
 def test(PATH):
-    test_data = MyData(root='',
-                       datatxt='',
+    test_data = MyData(root='./data/test/',
+                       datatxt='./data/test.txt',
                        transform=transforms.ToTensor())
 
     test_loader = torch.utils.data.DataLoader(dataset=test_data, batch_size=1, shuffle=True)
@@ -145,5 +145,5 @@ def test(PATH):
 
 if __name__ == '__main__':
 
-    train_img(200, model_name='')
+    train_img(200, model_name='./model/compound_1.pth')
 
